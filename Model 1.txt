@@ -1,17 +1,17 @@
 Table FACT_PAYMENT {
-  payment_key           int           [pk, increment, note: "Surrogate key"]
-  recipient_key         int           [ref: > DIM_RECIPIENT.recipient_key]
-  manufacturer_key      int           [ref: > DIM_MANUFACTURER.manufacturer_key]
-  date_key              int           [ref: > DIM_DATE.date_key]
-  payment_type_key      int           [ref: > DIM_PAYMENT_TYPE.payment_type_key]
-  product_key_1         int           [ref: > DIM_PRODUCT.product_key]
-  product_key_2         int           [ref: > DIM_PRODUCT.product_key]
-  product_key_3         int           [ref: > DIM_PRODUCT.product_key]
-  product_key_4         int           [ref: > DIM_PRODUCT.product_key]
-  product_key_5         int           [ref: > DIM_PRODUCT.product_key]
-  record_id             bigint        [unique, note: "Source system natural key"]
-  total_amount_usd      decimal(15,2) [note: "ADDITIVE — core measure"]
-  num_payments_included int           [note: "ADDITIVE"]
+  payment_key           int          
+  recipient_key         int         
+  manufacturer_key      int          
+  date_key              int          
+  payment_type_key      int          
+  product_key_1         int         
+  product_key_2         int         
+  product_key_3         int          
+  product_key_4         int          
+  product_key_5         int         
+  record_id             bigint      
+  total_amount_usd      decimal(15,2)
+  num_payments_included int          
   city_of_travel        varchar(100)
   state_of_travel       char(2)
   country_of_travel     varchar(100)
@@ -25,10 +25,10 @@ Table FACT_PAYMENT {
 }
 
 Table DIM_RECIPIENT {
-  recipient_key   int          [pk, increment, note: "Surrogate key (SCD Type 2)"]
-  profile_id      bigint       [note: "Source system ID — NOT the PK"]
-  npi             varchar(20)  [note: "National Provider Identifier"]
-  recipient_type  varchar(100) [note: "Physician vs Teaching Hospital"]
+  recipient_key   int         
+  profile_id      bigint      
+  npi             varchar(20) 
+  recipient_type  varchar(100) 
   first_name      varchar(100)
   middle_name     varchar(100)
   last_name       varchar(100)
@@ -42,14 +42,14 @@ Table DIM_RECIPIENT {
   license_state_1 char(2)
   license_state_2 char(2)
   license_state_3 char(2)
-  address_key     int          [ref: > DIM_RECIPIENT_ADDRESS.address_key]
-  eff_start_date  date         [note: "SCD Type 2 — version start"]
-  eff_end_date    date         [note: "SCD Type 2 — version end (NULL = current)"]
+  address_key     int        
+  eff_start_date  date        
+  eff_end_date    date        
   is_current      boolean
 }
 
 Table DIM_RECIPIENT_ADDRESS {
-  address_key    int          [pk, increment]
+  address_key    int         
   street_line1   varchar(200)
   street_line2   varchar(200)
   city           varchar(100)
@@ -58,36 +58,36 @@ Table DIM_RECIPIENT_ADDRESS {
   country        varchar(100)
   province       varchar(100)
   postal_code    varchar(20)
-  eff_start_date date         [note: "SCD Type 2"]
+  eff_start_date date       
   eff_end_date   date
   is_current     boolean
 }
 
 Table DIM_MANUFACTURER {
-  manufacturer_key int          [pk, increment]
-  manufacturer_id  bigint       [note: "Source system ID"]
-  submitting_name  varchar(200) [note: "Entity that submitted the record"]
-  paying_name      varchar(200) [note: "Entity that actually made the payment"]
+  manufacturer_key int        
+  manufacturer_id  bigint      
+  submitting_name  varchar(200)
+  paying_name      varchar(200)
   state            char(2)
   country          varchar(100)
-  is_current       boolean      [note: "Type 1 SCD — overwrite on change"]
+  is_current       boolean      
 }
 
 Table DIM_PRODUCT {
-  product_key         int          [pk, increment]
+  product_key         int         
   product_name        varchar(200)
-  ndc_code            varchar(50)  [note: "National Drug Code"]
-  pdi_code            varchar(50)  [note: "Product Device Identifier"]
+  ndc_code            varchar(50) 
+  pdi_code            varchar(50)  
   therapeutic_area    varchar(200)
   drug_or_device_flag varchar(50)
   covered_indicator   varchar(50)
-  eff_start_date      date         [note: "SCD Type 2"]
+  eff_start_date      date        
   eff_end_date        date
   is_current          boolean
 }
 
 Table DIM_DATE {
-  date_key           int         [pk, note: "Format: YYYYMMDD"]
+  date_key           int      
   full_date          date
   day_of_week        varchar(10)
   day_number         int
@@ -98,11 +98,11 @@ Table DIM_DATE {
   year               int
   is_weekend         boolean
   is_federal_holiday boolean
-  program_year       int         [note: "Reporting year per CMS rules"]
+  program_year       int  
 }
 
 Table DIM_PAYMENT_TYPE {
-  payment_type_key  int          [pk, increment]
-  form_of_payment   varchar(100) [note: "e.g. Cash or cash equivalent"]
-  nature_of_payment varchar(100) [note: "e.g. Royalty or License"]
+  payment_type_key  int     
+  form_of_payment   varchar(100)
+  nature_of_payment varchar(100)
 }
