@@ -1,0 +1,117 @@
+Table FACT_PAYMENT {
+  payment_key                    int           
+  recipient_key                  int           
+  manufacturer_key               int         
+  date_key                       int           
+  payment_type_key               int           
+  travel_key                     int          
+  change_type_key                int          
+  dispute_status_key             int          
+  product_key_1                  int          
+  product_key_2                  int          
+  product_key_3                  int         
+  product_key_4                  int          
+  product_key_5                  int          
+  record_id                      bigint       
+  total_amount_usd               decimal(15,2) 
+  num_payments_included          int           
+  charity_indicator              char(1)
+  physician_ownership_indicator  char(1)
+  delay_in_publication_indicator char(1)
+  related_product_indicator      char(1)
+  contextual_information         text
+}
+
+Table DIM_RECIPIENT {
+  recipient_key   int         
+  profile_id      bigint      
+  npi             varchar(20)  
+  recipient_type  varchar(100) 
+  first_name      varchar(100)
+  middle_name     varchar(100)
+  last_name       varchar(100)
+  name_suffix     varchar(20)
+  primary_type_1  varchar(100)
+  primary_type_2  varchar(100)
+  primary_type_3  varchar(100)
+  specialty_1     varchar(200)
+  specialty_2     varchar(200)
+  specialty_3     varchar(200)
+  license_state_1 char(2)
+  license_state_2 char(2)
+  license_state_3 char(2)
+  street_line1    varchar(200) 
+  street_line2    varchar(200)
+  city            varchar(100)
+  state           char(2)
+  zip_code        varchar(20)
+  country         varchar(100)
+  province        varchar(100)
+  postal_code     varchar(20)
+  eff_start_date  date        
+  eff_end_date    date         
+  is_current      boolean
+}
+
+Table DIM_MANUFACTURER {
+  manufacturer_key int        
+  manufacturer_id  bigint       
+  submitting_name  varchar(200) 
+  paying_name      varchar(200) 
+  state            char(2)
+  country          varchar(100)
+  is_current       boolean     
+}
+
+Table DIM_PRODUCT {
+  product_key         int        
+  product_name        varchar(200)
+  ndc_code            varchar(50)  
+  pdi_code            varchar(50)  
+  therapeutic_area    varchar(200)
+  drug_or_device_flag varchar(50)
+  covered_indicator   varchar(50)
+  eff_start_date      date        
+  eff_end_date        date
+  is_current          boolean
+}
+
+Table DIM_DATE {
+  date_key           int     
+  full_date          date
+  day_of_week        varchar(10)
+  day_number         int
+  week_number        int
+  month_number       int
+  month_name         varchar(15)
+  quarter            int
+  year               int
+  is_weekend         boolean
+  is_federal_holiday boolean
+  program_year       int       
+}
+
+Table DIM_PAYMENT_TYPE {
+  payment_type_key  int         
+  form_of_payment   varchar(100) 
+  nature_of_payment varchar(100) 
+}
+
+Table DIM_TRAVEL {
+  travel_key        int         
+  city_of_travel    varchar(100)
+  state_of_travel   char(2)
+  country_of_travel varchar(100)
+}
+
+Table LKP_CHANGE_TYPE {
+  change_type_key  int         
+  change_type_code varchar(50)  
+  description      varchar(200) 
+}
+
+Table LKP_DISPUTE_STATUS {
+  dispute_status_key  int         
+  dispute_status_code varchar(50)  
+  description         varchar(200) 
+}
