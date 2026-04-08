@@ -1,0 +1,108 @@
+Table FACT_PAYMENT {
+  payment_key           int           [pk, increment, note: "Surrogate key"]
+  recipient_key         int           [ref: > DIM_RECIPIENT.recipient_key]
+  manufacturer_key      int           [ref: > DIM_MANUFACTURER.manufacturer_key]
+  date_key              int           [ref: > DIM_DATE.date_key]
+  payment_type_key      int           [ref: > DIM_PAYMENT_TYPE.payment_type_key]
+  product_key_1         int           [ref: > DIM_PRODUCT.product_key]
+  product_key_2         int           [ref: > DIM_PRODUCT.product_key]
+  product_key_3         int           [ref: > DIM_PRODUCT.product_key]
+  product_key_4         int           [ref: > DIM_PRODUCT.product_key]
+  product_key_5         int           [ref: > DIM_PRODUCT.product_key]
+  record_id             bigint        [unique, note: "Source system natural key"]
+  total_amount_usd      decimal(15,2) [note: "ADDITIVE — core measure"]
+  num_payments_included int           [note: "ADDITIVE"]
+  city_of_travel        varchar(100)
+  state_of_travel       char(2)
+  country_of_travel     varchar(100)
+  change_type           varchar(50)
+  dispute_status        varchar(50)
+  charity_indicator     char(1)
+  physician_ownership_indicator   char(1)
+  delay_in_publication_indicator  char(1)
+  related_product_indicator       char(1)
+  contextual_information          text
+}
+
+Table DIM_RECIPIENT {
+  recipient_key   int          [pk, increment, note: "Surrogate key (SCD Type 2)"]
+  profile_id      bigint       [note: "Source system ID — NOT the PK"]
+  npi             varchar(20)  [note: "National Provider Identifier"]
+  recipient_type  varchar(100) [note: "Physician vs Teaching Hospital"]
+  first_name      varchar(100)
+  middle_name     varchar(100)
+  last_name       varchar(100)
+  name_suffix     varchar(20)
+  primary_type_1  varchar(100)
+  primary_type_2  varchar(100)
+  primary_type_3  varchar(100)
+  specialty_1     varchar(200)
+  specialty_2     varchar(200)
+  specialty_3     varchar(200)
+  license_state_1 char(2)
+  license_state_2 char(2)
+  license_state_3 char(2)
+  address_key     int          [ref: > DIM_RECIPIENT_ADDRESS.address_key]
+  eff_start_date  date         [note: "SCD Type 2 — version start"]
+  eff_end_date    date         [note: "SCD Type 2 — version end (NULL = current)"]
+  is_current      boolean
+}
+
+Table DIM_RECIPIENT_ADDRESS {
+  address_key    int          [pk, increment]
+  street_line1   varchar(200)
+  street_line2   varchar(200)
+  city           varchar(100)
+  state          char(2)
+  zip_code       varchar(20)
+  country        varchar(100)
+  province       varchar(100)
+  postal_code    varchar(20)
+  eff_start_date date         [note: "SCD Type 2"]
+  eff_end_date   date
+  is_current     boolean
+}
+
+Table DIM_MANUFACTURER {
+  manufacturer_key int          [pk, increment]
+  manufacturer_id  bigint       [note: "Source system ID"]
+  submitting_name  varchar(200) [note: "Entity that submitted the record"]
+  paying_name      varchar(200) [note: "Entity that actually made the payment"]
+  state            char(2)
+  country          varchar(100)
+  is_current       boolean      [note: "Type 1 SCD — overwrite on change"]
+}
+
+Table DIM_PRODUCT {
+  product_key         int          [pk, increment]
+  product_name        varchar(200)
+  ndc_code            varchar(50)  [note: "National Drug Code"]
+  pdi_code            varchar(50)  [note: "Product Device Identifier"]
+  therapeutic_area    varchar(200)
+  drug_or_device_flag varchar(50)
+  covered_indicator   varchar(50)
+  eff_start_date      date         [note: "SCD Type 2"]
+  eff_end_date        date
+  is_current          boolean
+}
+
+Table DIM_DATE {
+  date_key           int         [pk, note: "Format: YYYYMMDD"]
+  full_date          date
+  day_of_week        varchar(10)
+  day_number         int
+  week_number        int
+  month_number       int
+  month_name         varchar(15)
+  quarter            int
+  year               int
+  is_weekend         boolean
+  is_federal_holiday boolean
+  program_year       int         [note: "Reporting year per CMS rules"]
+}
+
+Table DIM_PAYMENT_TYPE {
+  payment_type_key  int          [pk, increment]
+  form_of_payment   varchar(100) [note: "e.g. Cash or cash equivalent"]
+  nature_of_payment varchar(100) [note: "e.g. Royalty or License"]
+}
